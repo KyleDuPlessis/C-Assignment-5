@@ -1,0 +1,64 @@
+Makefile rules:
+
+Makefile in project folder (Assignment5_DPLKYL002):
+
+make - compile this project folder
+
+Run program:
+./samp  -r sampleRateInHz -b bitCount -c noChannels [-o outFileName ] [<ops>] soundFile1 [soundFile2]
+
+Note:
+- don't include the angle or square brackets
+
+* -r Specifies the number of samples per second of the audio file(s) (usually 44100).
+* -b Specifies the size (in bits) of each sample (8-bit and 16-bit).
+* -c Number of channels in the audio file(s) [1 (mono) or 2 (stereo)].
+* "outFileName" is the name of the newly created sound clip (should default to "out")
+* <ops> is ONE of the following:
+
+* "-add": add soundFile1 and soundFile2.
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/add -add sample_input/beez18sec_44100_signed_8bit_mono.raw sample_input/frogs18sec_44100_signed_8bit_mono.raw
+
+* "-cut r1 r2": remove samples over range [r1,r2] (inclusive) (in seconds) (assumes one sound file).
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/cut -cut 2 8 sample_input/beez18sec_44100_signed_8bit_mono.raw
+
+* "-radd r1 r2 s1 s2": add soundFile1 and soundFile2 over sub-ranges indicated (in seconds). The ranges must be equal in length.
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/radd -radd 2 8 sample_input/beez18sec_44100_signed_8bit_mono.raw sample_input/frogs18sec_44100_signed_8bit_mono.raw
+
+* "-cat": concatenate soundFile1 and soundFile2.
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/cat -cat sample_input/beez18sec_44100_signed_8bit_mono.raw sample_input/frogs18sec_44100_signed_8bit_mono.raw
+
+* "-v r1 r2": volume factor for left / right audio (def=1.0/1.0) (assumes one sound file).
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/vol -v 2.0 sample_input/beez18sec_44100_signed_8bit_mono.raw
+
+* "-rev": reverse sound file (assumes one sound file only).
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/rev -rev sample_input/beez18sec_44100_signed_8bit_mono.raw
+
+* "-rms": prints out the RMS of the sound file (assumes one sound file only).
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/rms -rms sample_input/beez18sec_44100_signed_8bit_mono.raw
+
+* "-norm r1 r2": normalize file for left / right audio (assumes one sound file only and that r1 and r2 are floating point RMS values.)
+Run example:
+./samp -r 44100 -b 8-bit -c 1 -o output/norm -norm 2.0 sample_input/beez18sec_44100_signed_8bit_mono.raw
+
+* "soundFile1" is the name of the input .raw file. A second sound file is required for
+some operations as indicted above.
+
+Explanation of what each file does and how it fits into the program as a whole:
+		
+Driver.cpp - This driver source file contains the main function (entry point to the program). It parses the command line 
+	 using the argc and argv values passed into main() and uses these arguments to invoke the correct audio operation function.
+	 
+Driver.h - This header file contains methods to perform the audio operation functionality (audio processing): 
+	add, cut, radd, cat, volumeFactor, rms, rev and norm.
+	
+Audio.h - This header file contains methods to perform the audio transformation functionality: reverse, sound normalization, 
+	ranged add and compute RMS, as well as various operators and utility functions.
+	
